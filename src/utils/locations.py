@@ -2,6 +2,7 @@
 
 import csv
 import re
+from decimal import Decimal, InvalidOperation
 import tempfile
 from functools import lru_cache
 from pathlib import Path
@@ -373,9 +374,24 @@ def group_id_from_source(source_file: str) -> int | None:
     return raw_id if raw_id < 0 else int(f"-100{raw_id}")
 
 
+def parse_group_id(value: str) -> int:
+    """Parse a group ID stored as either an integer or spreadsheet notation."""
+    text = value.strip()
+    try:
+        number = Decimal(text)
+    except InvalidOperation as error:
+        raise ValueError(f"invalid group_id {value!r}") from error
+    if not number.is_finite() or number != number.to_integral_value():
+        raise ValueError(f"group_id must be an integer, got {value!r}")
+    return int(number)
+
+
 def load_group_locations(groups_csv: Path) -> dict[int, tuple[str, str]]:
     with groups_csv.open(encoding="utf-8") as source:
-        return {int(row["group_id"]): (row["province"], row["city"]) for row in csv.DictReader(source)}
+        return {
+            parse_group_id(row["group_id"]): (row["province"], row["city"])
+            for row in csv.DictReader(source)
+        }
 
 
 def resolve_location(

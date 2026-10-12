@@ -19,6 +19,7 @@ from src.api.config import ApiConfig
 from src.api.events import Broadcaster
 from src.api.main import create_app
 from src.api.store import PROVINCE_IDS, Store
+from src.utils.locations import parse_group_id
 
 NOW = datetime(2026, 10, 3, 12, 0, tzinfo=UTC)
 HOME_FILE = "group_-1009000000001.jsonl"    # home location Gyeonggi-do / Hwaseong in the test csv
@@ -66,6 +67,9 @@ class TempData:
 
 
 class StoreTests(unittest.TestCase):
+    def test_parse_group_id_accepts_spreadsheet_notation(self):
+        self.assertEqual(parse_group_id("-1.00155E+12"), -1001550000000)
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.data = TempData(Path(self.temp.name))

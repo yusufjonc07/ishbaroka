@@ -17,6 +17,7 @@ from src.crawler.messages import extract_referenced_group_link, extract_referenc
 from src.main import EXIT_LOCKED, acquire_session_lock, lookup_cache
 from src.tdlib.cache import LookupCache
 from src.tdlib.client import TdlibClient
+from src.utils.locations import parse_group_id
 
 OUTPUT_PATH = PROJECT_ROOT / "data" / "telegram_groups.csv"
 FIELDS = ("group_id", "group_title", "message_count", "last_msg_date", "province", "city")
@@ -198,10 +199,10 @@ def main() -> None:
 
     if OUTPUT_PATH.exists():
         with OUTPUT_PATH.open(encoding="utf-8") as existing:
-            rows += [row for row in csv.DictReader(existing) if int(row["group_id"]) not in groups]
+            rows += [row for row in csv.DictReader(existing) if parse_group_id(row["group_id"]) not in groups]
 
     for row in rows:
-        row["province"], row["city"] = GROUP_LOCATIONS.get(int(row["group_id"]), ("", ""))
+        row["province"], row["city"] = GROUP_LOCATIONS.get(parse_group_id(row["group_id"]), ("", ""))
 
     rows.sort(key=lambda row: int(row["message_count"]), reverse=True)
     with OUTPUT_PATH.open("w", encoding="utf-8", newline="") as output:

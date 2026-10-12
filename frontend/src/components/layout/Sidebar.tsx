@@ -14,20 +14,7 @@ import { AccountBox } from '../auth/Auth'
 import { statusText } from './LiveBadge'
 
 export function Logo() {
-  return (
-    <svg viewBox="0 0 32 32" className="size-8 shrink-0" aria-hidden>
-      <defs>
-        <linearGradient id="logo-g" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#3b82f6" />
-          <stop offset="1" stopColor="#4f46e5" />
-        </linearGradient>
-      </defs>
-      <rect width="32" height="32" rx="9" fill="url(#logo-g)" />
-      <rect x="8" y="17" width="4" height="7" rx="1.5" fill="#fff" opacity="0.7" />
-      <rect x="14" y="12" width="4" height="12" rx="1.5" fill="#fff" opacity="0.85" />
-      <rect x="20" y="8" width="4" height="16" rx="1.5" fill="#fff" />
-    </svg>
-  )
+  return <img src="/logo-horizontal.png" alt="Ishbaroka" className="h-10 w-auto shrink-0 object-contain" />
 }
 
 const LISTENER_LOOK: Record<ListenerStatus['state'], { dot: string; text: string }> = {
@@ -80,12 +67,9 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <nav aria-label="Main" className="glass flex h-full flex-col p-3">
-      <div className="flex items-center gap-2.5 px-2 pt-1 pb-5">
+      <div className="px-2 pt-1 pb-5">
         <Logo />
-        <div className="min-w-0">
-          <div className="truncate text-[15px] leading-5 font-semibold text-slate-900">Ish e'lonlari · Korea</div>
-          <div className="truncate text-xs text-slate-500">Live job-ads dashboard</div>
-        </div>
+        <div className="mt-1.5 truncate text-xs text-slate-500">Ish e'lonlari · Korea — live job-ads dashboard</div>
       </div>
       <ul className="space-y-0.5">
         {ROUTES.map(({ path, label, icon: Icon }) => (

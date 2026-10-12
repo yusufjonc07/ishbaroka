@@ -26,7 +26,7 @@ from config.settings import PROJECT_ROOT
 from src.api import extract
 from src.api.config import ApiConfig
 from src.utils.job_filter import JOB_OFFER, KINDS
-from src.utils.locations import group_id_from_source
+from src.utils.locations import group_id_from_source, parse_group_id
 
 log = logging.getLogger("src.api.store")
 
@@ -166,7 +166,7 @@ def read_groups_csv(path: Path) -> dict[int, dict]:
     if not path.is_file():
         return {}
     with path.open(encoding="utf-8") as source:
-        return {int(row["group_id"]): row for row in csv.DictReader(source)}
+        return {parse_group_id(row["group_id"]): row for row in csv.DictReader(source)}
 
 
 def display_title(name: str | None) -> str | None:

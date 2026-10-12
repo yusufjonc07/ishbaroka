@@ -65,7 +65,8 @@ def known_group_ids(raw_dir: Path, groups_csv: Path | None = None) -> tuple[int,
     ids = {group_id_from_source(path.name) for path in raw_dir.glob("group_*.jsonl")}
     if groups_csv is not None and groups_csv.is_file():
         with groups_csv.open(encoding="utf-8") as source:
-            ids |= {int(row["group_id"]) for row in csv.DictReader(source) if row.get("group_id")}
+            # ids a spreadsheet rounded (e.g. "-1.00E+12") are unrecoverable: skip them rather than guess
+            ids |= {int(row["group_id"]) for row in csv.DictReader(source) if re.fullmatch(r"-?\d+", (row.get("group_id") or "").strip())}
     return tuple(sorted(i for i in ids if i is not None))
 
 

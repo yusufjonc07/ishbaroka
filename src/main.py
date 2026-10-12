@@ -4,6 +4,7 @@ import argparse
 import asyncio
 import fcntl
 import os
+import re
 import sys
 import time
 import json
@@ -272,7 +273,7 @@ def group_titles() -> dict[int, str]:
     import csv
 
     with GROUPS_CSV.open(encoding="utf-8") as source:
-        return {int(row["group_id"]): row.get("group_title") or "" for row in csv.DictReader(source) if row.get("group_id")}
+        return {int(row["group_id"]): row.get("group_title") or "" for row in csv.DictReader(source) if re.fullmatch(r"-?\d+", (row.get("group_id") or "").strip())}
 
 
 def listener_hooks(client: TdlibClient, unreadable: list[int]):
